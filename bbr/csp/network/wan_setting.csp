@@ -1,0 +1,371 @@
+<% @b 
+	@include <webhandle.h>
+	USE_LANG_SET(network);
+	BROADBAND_ROUTER 	bbr[1];
+	char				errmsg[256] = "";
+	
+	/* load first */
+	load_bbr(bbr, errmsg);
+	
+	/* save user submit */
+	if (!isblankstr(G("Save"))) {
+	
+		BUFCPY(bbr->wan.wan_type, G("wantype"));
+		if (!strcmp(bbr->wan.wan_type, WAN_TYPE_PPPOE))
+		{
+			BUFCPY(bbr->wan.account, G("acc"));
+			BUFCPY(bbr->wan.password, G("psw"));
+			BUFCPY(bbr->wan.connect_mode, G("linktype"));
+			if ( !strcmp(bbr->wan.connect_mode, "1") )
+				bbr->wan.auto_wait_time = atoi(G("waittime"));
+			if ( !strcmp(bbr->wan.connect_mode, "4") )
+				bbr->wan.manual_wait_time = atoi(G("waittime2"));
+		} 
+		else 
+		{
+			bbr->wan.mtu = atoi(G("mtu"));
+				
+			if (!strcmp(bbr->wan.wan_type, WAN_TYPE_STATIC_IP))
+			{
+				BUFCPY(bbr->wan.ip, G("ip"));
+				BUFCPY(bbr->wan.ipmask, G("mask"));
+				BUFCPY(bbr->wan.gateway, G("gateway"));
+				
+				BUFCPY(bbr->dhcps.main_dsn_server, G("dnsserver"));
+				BUFCPY(bbr->dhcps.backup_dsn_server, G("dnsserver2"));
+			}
+			else if (!strcmp(bbr->wan.wan_type, WAN_TYPE_DYNAMIC_IP))
+			{
+				bbr->wan.get_ip_by_unicast = atoi(G("flagMode"));
+				bbr->pppoe.manual_set_dns = atoi(G("manual"));
+				
+				if (bbr->pppoe.manual_set_dns)
+				{
+					BUFCPY(bbr->dhcps.main_dsn_server, G("dnsserver"));
+					BUFCPY(bbr->dhcps.backup_dsn_server, G("dnsserver2"));
+				}
+			}
+		}
+		
+		save_bbr(bbr, errmsg);
+	}
+%>
+
+<HTML>
+<HEAD>
+<TITLE>pppoecfg</TITLE>
+<META content="text/html; charset=gb2312" http-equiv=Content-Type>
+<META content=no-cache http-equiv=pragma>
+<META content="wed, 26 Feb 1997 08:21:57 GMT" http-equiv=expires>
+<LINK href="/rom/bbr.css" rel=stylesheet type=text/css>
+<SCRIPT language=JavaScript src='/js/common.js' 
+type=text/JavaScript></SCRIPT>
+<SCRIPT language=JavaScript><!-- 
+//if(window.parent == window){window.location.href="http://<% =getServerAddr() %>";}
+//function Click(){ window.event.returnValue=false;}
+//document.oncontextmenu=Click;
+function doPrev(){history.go(-1);}
+function doSubmit(){
+	if(document.forms[0].linktype[0].checked){
+		if(!is_number(document.forms[0].waittime.value,0,99)){
+			alert("<% =lang("time_input_err") %>");
+			
+			var element =document.forms[0].waittime;
+			if(element){element.focus();element.select();}
+			return false;
+		}	
+	}
+	if(document.forms[0].linktype[2].checked){
+		if(!is_number(document.forms[0].waittime2.value,0,99)){
+			alert("<% =lang("time_input_err") %>");
+			var element =document.forms[0].waittime2;
+			if(element){element.focus();element.select();}
+				return false;
+		}
+	}
+	return true;
+}
+
+function doSet(){
+if(document.forms[0].manual.checked){
+document.forms[0].dnsserver.disabled = false;
+document.forms[0].dnsserver2.disabled = false;}
+else{document.forms[0].dnsserver.disabled = true;
+document.forms[0].dnsserver2.disabled = true;}
+return true;}
+
+function doAdvance(){location.href="/network/pppoe_more.csp"}
+function doSelect(){
+	if(document.forms[0].linktype[0].checked)
+		document.forms[0].waittime.disabled = false;
+	else
+		{document.forms[0].waittime.disabled = true;}
+
+	if(document.forms[0].linktype[2].checked)
+		document.forms[0].waittime2.disabled = false;
+	else
+		{document.forms[0].waittime2.disabled = true;}
+		
+	return true;
+}
+
+function doLoad(){
+	if(document.forms[0].linktype[0].checked)
+		document.forms[0].waittime.disabled = false;
+	else{document.forms[0].waittime.disabled = true;}
+	
+	if(document.forms[0].linktype[2].checked)
+		document.forms[0].waittime2.disabled = false;
+	else{document.forms[0].waittime2.disabled = true;}
+	
+	/* set wan mode */
+	reload_request();
+	
+	return true;
+}
+
+var this_choose = null;
+function reload_request()
+{
+    var choose=document.thisform.wantype.value;
+    
+    /* hiden first */
+    if (this_choose != null)
+    	this_choose.style.display = 'none';
+    
+    /* show choose */
+    if (choose == "<% =WAN_TYPE_DYNAMIC_IP %>")
+    	this_choose = document.getElementById('div_<% =WAN_TYPE_DYNAMIC_IP %>');
+    else if (choose == "<% =WAN_TYPE_STATIC_IP %>")
+    	this_choose = document.getElementById('div_<% =WAN_TYPE_STATIC_IP %>');
+    else if (choose == "<% =WAN_TYPE_PPPOE %>")
+    	this_choose = document.getElementById('div_<% =WAN_TYPE_PPPOE %>');
+    else 
+    	alert("Unknow choose");
+    
+    if (this_choose != null)
+    	this_choose.style.display = '';
+    else 
+    	alert(this_choose.id);
+}
+//--></SCRIPT>
+</HEAD>
+<BODY onload=doLoad();>
+<CENTER>
+  <FORM name="thisform" action="" method=post onsubmit="return doSubmit();">
+    <TABLE border=0 cellPadding=0 cellSpacing=0 width=502>
+      <TBODY>
+        <TR>
+          <TD class=title width=7><IMG height=24 src="/rom/arc.gif" 
+      width=7></TD>
+          <TD align=left class=title vAlign=center width=495><% =lang("wansetting") %></TD>
+        </TR>
+        <TR>
+          <TD colSpan=2><TABLE border=0 cellPadding=0 cellSpacing=0 width=502>
+              <TBODY>
+                <TR>
+                  <TD class=vline rowSpan=15><BR></TD>
+                  <TD width=500><TABLE align=center border=0 cellPadding=0 cellSpacing=0 class=space 
+            width=460>
+                      <TBODY>
+                        <TR>
+                          <TD><% =lang("basicwan") %></TD>
+                        </TR>
+                      </TBODY>
+                    </TABLE>
+                    <TABLE align=center border=0 cellPadding=0 cellSpacing=0 class=space 
+            width=460>
+                      <TBODY>
+                        <TR>
+                          <TD width=111><% =lang("wctype") %>£º</TD>
+                          <TD width=285>
+                          <% SELECT_BEGIN("wantype", bbr->wan.wan_type, "class=list onchange=reload_request()") %>
+                              <% OPTIONS_ADD(WAN_TYPE_DYNAMIC_IP, lang("dip")) %>
+                              <% OPTIONS_ADD(WAN_TYPE_STATIC_IP, lang("sip")) %>
+                              <% OPTIONS_ADD(WAN_TYPE_PPPOE, "PPPoE") %>
+                          <% SELECT_END() %>
+						  </TD>
+                        </TR>
+                      </TBODY>
+                    </TABLE>
+<!-- PPPoE -->
+<div id="div_<% =WAN_TYPE_PPPOE %>" style="DISPLAY: none">
+                    <TABLE align=center border=0 width=460>
+                      <TBODY>
+                        <TR>
+                        <TR>
+                          <TD width=107><% =lang("account") %>£º</TD>
+                          <TD width=289><INPUT class=text id=acc maxLength=118 name=acc 
+                  size=25 value="<% =bbr->wan.account %>"></TD>
+                        </TR>
+                        <TR>
+                          <TD><% =lang("pswd") %>£º</TD>
+                          <TD><INPUT class=text id=psw maxLength=118 name=psw size=25 
+                  type=password value="<% =bbr->wan.password %>"></TD>
+                        </TR>
+                      </TBODY>
+                    </TABLE>
+                    <TABLE align=center border=0 cellPadding=0 cellSpacing=0 class=space 
+            width=460>
+                      <TBODY>
+                        <TR>
+                          <TD colSpan=2><% =lang("connect_mode") %></TD>
+                        </TR>	
+                        <TR>
+                          <TD colSpan=2>
+                          	<% RADIO_BOX("linktype", "1", bbr->wan.connect_mode, "onclick=doSelect();"); %>
+                            <% =lang("connect_by_need") %></TD>
+                        </TR>
+                        <TR>
+                          <TD width=27>&nbsp;</TD>
+                          <TD width=373><% =lang("desc_wait") %>£º
+                            <INPUT class=text id=waittime maxLength=2 name=waittime size=2 
+                              value="<% =$bbr->wan.auto_wait_time %>">
+                            <% =lang("seconds") %></TD>
+                        </TR>
+                        <TR><% RADIO_BOX("linktype", "2", bbr->wan.connect_mode, "onclick=doSelect();"); %>
+                            <% =lang("auto_connect") %></TD>
+                        </TR>
+                        <TR>
+                          <TD colSpan=2>
+                          	<% RADIO_BOX("linktype", "4", bbr->wan.connect_mode, "onclick=doSelect();"); %>
+                            <% =lang("manual_connecgt") %></TD>
+                        </TR>
+                        <TR>
+                          <TD>&nbsp;</TD>
+                          <TD><% =lang("auto_dis_wait") %>£º
+                            <INPUT class=text id=waittime2 maxLength=2 name=waittime2 size=2 
+                              value="<% =$bbr->wan.manual_wait_time %>">
+                            <% =lang("seconds") %></TD>
+                        </TR>
+                      </TBODY>
+                    </TABLE>
+                    <TABLE align=center border=0 cellPadding=0 cellSpacing=0 class=space 
+            width=400>
+                      <TBODY>
+                        <TR>
+                          <TD><INPUT class=button disabled id=connect2 name=Connect type=submit value="<% =lang("connect") %>">
+&nbsp;
+                            <INPUT class=button id=disconnect2 name=Disconnect type=submit value="<% =lang("disconnect") %>"></TD>
+                        </TR>
+                      </TBODY>
+                    </TABLE>
+                    <TABLE align=center border=0 cellPadding=0 cellSpacing=0 class=space 
+            width=460>
+                      <TBODY>
+                        <TR>
+                          <TD><INPUT class=button name=Advanced onclick=doAdvance(); type=button value=<% =lang("advance") %>></TD>
+                        </TR>
+                      </TBODY>
+                    </TABLE>
+</div>
+<!-- end PPPoE -->
+
+<!-- DYNAMIC IP -->
+<div id="div_<% =WAN_TYPE_DYNAMIC_IP %>" style="DISPLAY: none">
+                <table width="400" border="0" align="center" class="space">
+                  <tr>
+                    <td width="155" height="25" bordercolor="#FFFFFF"><input name="RenewIp" type="submit" class="button" id="refresh2" value="<% =lang("refresh") %>" Disabled>
+&nbsp;
+                      <input name="ReleaseIp" type="submit" class="button" id="release" value="<% =lang("release") %>" Disabled></td>
+                    <td width="283" bordercolor="#FFFFFF">&nbsp;</td>
+                  </tr>
+                  <tr>
+                    <td width="107"><% =lang("address") %></td>
+                    <td width="283">0.0.0.0</td>
+                  </tr>
+                  <tr>
+                    <td><% =lang("mask") %></td>
+                    <td>0.0.0.0</td>
+                  </tr>
+                  <tr>
+                    <td><% =lang("gateway") %></td>
+                    <td>0.0.0.0</td>
+                  </tr>
+                  <tr>
+                    <td><% =lang("mtu") %></td>
+                    <td><input name="mtu" type="text" class="text" value="<% =$bbr->wan.mtu %>" size="5" maxlength="5">
+                      <% =lang("defautmtu") %></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2"><% CHECK_BOX2("manual", "2", bbr->pppoe.manual_set_dns, "id=\"manual\" onClick=\"doSet();\"") %>
+                      <% =lang("man_dns") %></td>
+                  </tr>
+                  <tr>
+                    <td><% =lang("dns") %>:</td>
+                    <td><input name="dnsserver" type="text" class="text" id="dnsserver" value="<% =bbr->dhcps.main_dsn_server %>" size="15" maxlength="15" Disabled></td>
+                  </tr>
+                  <tr>
+                    <td><% =lang("bk_dns") %></td>
+                    <td><input name="dnsserver2" type="text" class="text" id="dnsserver2" value="<% =bbr->dhcps.backup_dsn_server %>" size="15" maxlength="15" Disabled>
+                      (<% =lang("option") %>)</td>
+                  </tr>
+                  <tr>
+                    <td colspan="2"><% CHECK_BOX2("flagMode", "2", bbr->wan.get_ip_by_unicast, "") %>
+                      <% =lang("flagmode") %></td>
+                  </tr>
+                </table>
+</div>
+<!-- end DYNAMIC IP -->
+
+<!-- STATIC IP -->
+<div id="div_<% =WAN_TYPE_STATIC_IP %>" style="DISPLAY: none">
+              <table width="400" border="0" align="center" class="space">
+                <tr>
+                  <td width="107">IP<% =lang("address") %></td>
+                  <td width="289"><input name="ip" type="text" class="text" id="ip" value="<% =bbr->wan.ip %>" size="15" maxlength="15">
+                  </td>
+                </tr>
+                <tr>
+                  <td><% =lang("mask") %></td>
+                  <td><input name="mask" type="text" class="text" id="mask" value="<% =bbr->wan.ipmask %>" size="15" maxlength="15"></td>
+                </tr>
+                <tr>
+                  <td><% =lang("gateway") %></td>
+                  <td><input name="gateway" type="text" class="text" id="gateway" value="<% =bbr->wan.gateway %>" size="15" maxlength="15">
+                    (<% =lang("option") %>)</td>
+                <tr>
+                  <td><% =lang("mtu") %></td>
+                  <td><input name="mtu" type="text" class="text" value="<% =$bbr->wan.mtu %>" size="5" maxlength="5">
+                    <% =lang("defautmtu") %></td>
+                </tr>
+                </tr>
+                <tr>
+                  <td><% =lang("dns") %>:</td>
+                  <td><input name="dnsserver" type="text" class="text" id="dnsserver" value="<% =bbr->dhcps.main_dsn_server %>" size="15" maxlength="15">
+                    (<% =lang("option") %>)</td>
+                </tr>
+                <tr>
+                  <td><% =lang("bk_dns") %></td>
+                  <td><input name="dnsserver2" type="text" class="text" id="dnsserver2" value="<% =bbr->dhcps.backup_dsn_server %>" size="15" maxlength="15">
+                    (<% =lang("option") %>)</td>
+                </tr>
+              </table>
+</div>
+<!-- end STATIC IP -->
+                  </TD>
+                  <TD class=vline rowSpan=15><BR></TD>
+                </TR>
+                <TR>
+                  <TD class=hline><IMG height=1 src="/rom/empty.gif" 
+          width=1></TD>
+                </TR>
+                <TR>
+                  <TD class=tail height=30>&nbsp;
+                    <INPUT class=button id=save name=Save type=submit value="<% =lang("save") %>">
+&nbsp; </TD>
+                </TR>
+                <TR>
+                  <TD class=hline><IMG height=1 src="/rom/empty.gif" 
+          width=1></TD>
+                </TR>
+              </TBODY>
+            </TABLE></TD>
+        </TR>
+      </TBODY>
+    </TABLE>
+  </FORM>
+</CENTER>
+<META content=no-cache http-equiv=pragma>
+</BODY>
+</HTML>

@@ -1,0 +1,73 @@
+<% @b
+	@include <webhandle.h>
+	USE_LANG_SET(basic);
+%>
+<HTML>
+<HEAD>
+<TITLE>banner</TITLE>
+<META content="text/html; charset=gb2312" http-equiv=Content-Type>
+<STYLE type=text/css><!--
+.font {
+	COLOR: #ffffff; FONT-FAMILY: "Courier New", "Courier", "mono"; FONT-SIZE: 12px
+}
+TD {
+	FONT-FAMILY: "Times New Roman", "宋体"; FONT-SIZE: 12px
+}
+FORM {
+	FONT-FAMILY: "Times New Roman", "宋体"; FONT-SIZE: 12px
+}
+BODY {
+	FONT-FAMILY: "Arial Black", "黑体"; FONT-SIZE: 16px
+}
+.unnamed1 {
+	LETTER-SPACING: 50px; WORD-SPACING: 100px
+}
+.unnamed2 {
+	WORD-SPACING: 100px
+}
+.style1 {
+	COLOR: #ffffff; FONT-FAMILY: "黑体"; FONT-SIZE: <% =$LANG_EN==defLangGet() ? 32: 36 %>px; 
+	FONT-WEIGHT: bold; LETTER-SPACING: <% =$LANG_CH==defLangGet() ? 5: 0 %>px; WORD-SPACING: <% =$LANG_CH==defLangGet() ? 5: 0 %>px
+}
+.style2 {
+	FONT-FAMILY: Arial, Helvetica, sans-serif; FONT-SIZE: 32px; FONT-WEIGHT: bold
+}
+div {
+	FONT-FAMILY: Arial, Helvetica, sans-serif; FONT-SIZE: 12px; 
+	color: red; 
+}
+a:link {color: #000066; text-decoration: none} 
+a:visited {color: #000066; text-decoration: none}
+a:hover {color: #FF0000; text-decoration: underline} 
+a:active {color: #000066; text-decoration: underline}
+
+div.dv {
+	position: relative;
+	visibility: visible;
+	text-align:right;
+}
+--></STYLE>
+</HEAD>
+<BODY bottomMargin=0 leftMargin=0 rightMargin=0 topMargin=0>
+<TABLE border=0 cellPadding=0 cellSpacing=0 width="100%">
+  <TBODY>
+    <TR>
+      <TD background=/rom/bgtitle.jpg width=72><IMG src="/rom/banner.jpg"></TD>
+      <TD background=/rom/bgtitle.jpg align="left" nowrap>
+      <SPAN class=style1><% =lang("router") %></SPAN>
+      <TD width=180 background=/rom/bgtitle.jpg nowrap>
+<div class="dv">
+[ <A href="/login.csp&lang=ch" target=_top>中文</A> |
+  <A href="/login.csp&lang=en" target=_top>English</A> |
+  <A href="/login.csp&lang=jp" target=_top>日本語</A> ]
+</div>
+</TD>
+    </TR>
+    <TR>
+      <TD bgColor=#173a7e height=3 width=72></TD>
+      <TD bgColor=#173a7e height=3 width="100%" colspan=2></TD>
+    </TR>
+  </TBODY>
+</TABLE>
+</BODY>
+</HTML>

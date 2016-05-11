@@ -1,0 +1,149 @@
+<% @b 
+	@include <webhandle.h>
+	USE_LANG_SET(security);
+	BROADBAND_ROUTER 	bbr[1];
+	char				errmsg[256] = "";
+	
+	/* load first */
+	load_bbr(bbr, errmsg);
+	
+	/* save user submit */
+	if (!isblankstr(G("Save"))) {
+		bbr->rmanage.wan_port = atoi(G("port"));
+		strcpy(bbr->rmanage.remote_manage_host, G("ip"));
+
+		save_bbr(bbr, errmsg);
+	}
+	
+%>
+<HTML>
+<HEAD>
+<TITLE>control</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=gb2312">
+<META http-equiv=pragma content=no-cache>
+<META http-equiv=expires content="wed, 26 Feb 1997 08:21:57 GMT">
+<LINK 
+href="/rom/bbr.css" type=text/css rel=stylesheet>
+<SCRIPT language=JavaScript src='/js/common.js' 
+type=text/JavaScript><!--
+//--></SCRIPT>
+<SCRIPT language=JavaScript><!-- 
+//if(window.parent == window){window.location.href="<% =getScriptName() %>";}
+//function Click(){ window.event.returnValue=false;}
+//document.oncontextmenu=Click;
+var controlport;
+function doLoad(){controlport = document.forms[0].port.value;}
+
+function portverify(port_string){
+var c;
+var ch = "0123456789";
+if(port_string.length == 0)
+return false;
+for (var i = 0; i < port_string.length; i++){
+c = port_string.charAt(i);
+if (ch.indexOf(c) == -1)
+return false;}
+if (parseInt(port_string) <= 0 || parseInt(port_string) >= 65535)
+return false;return true;}
+
+function is_port(port_string){
+if(port_string.length == 0){
+alert("请输入端口地址（1－65534）！");
+return false;}
+if (!portverify(port_string)){
+alert("端口地址输入错误，请重新输入（1－65534）！");
+return false;}
+return true;}
+
+function doSubmit(){
+if(document.forms[0].port.value != ""){
+if(!is_port(document.forms[0].port.value)){	
+var element =document.forms[0].port;
+if(element){element.focus();element.select();}
+return false;}}
+if(document.forms[0].ip.value != ""){
+if(!is_ipaddr(document.forms[0].ip.value)){	
+var element =document.forms[0].ip;
+if(element){element.focus();element.select();}
+return false;}}
+if(document.forms[0].port.value != "" && controlport != document.forms[0].port.value)
+alert("<% =lang("promptreboot") %>");	
+return true;}
+//--></SCRIPT>
+</HEAD>
+<BODY onload=doLoad();>
+<CENTER>
+  <FORM action=""  method=post onsubmit="return doSubmit();">
+    <TABLE cellSpacing=0 cellPadding=0 width=502 border=0>
+      <TBODY>
+        <TR>
+          <TD class=title width=7><IMG height=24 
+      src="/rom/arc.gif" width=7></TD>
+          <TD class=title vAlign=center align=left width=495><% =lang("remotemanage") %></TD>
+        </TR>
+        <TR>
+          <TD colSpan=2><TABLE cellSpacing=0 cellPadding=0 width=502 border=0>
+              <TBODY>
+                <TR>
+                  <TD class=vline rowSpan=15><BR></TD>
+                  <TD width=500><TABLE class=space cellSpacing=0 cellPadding=0 width=400 
+            align=center border=0>
+                      <TBODY>
+                        <TR>
+                          <TD><% =lang("rmdesc") %></TD>
+                        </TR>
+                      </TBODY>
+                    </TABLE>
+                    <TABLE class=space cellSpacing=0 cellPadding=0 width=400 
+            align=center border=0>
+                      <TBODY>
+                        <TR>
+                          <TD class=top width=49><% =lang("notice") %></TD>
+                          <TD width=351><% =lang("notice1") %></TD>
+                        </TR>
+                        <TR>
+                          <TD>&nbsp;</TD>
+                          <TD><% =lang("notice2") %></TD>
+                        </TR>
+                      </TBODY>
+                    </TABLE>
+                    <TABLE class=space cellSpacing=0 cellPadding=0 width=400 
+            align=center border=0>
+                      <TBODY>
+                        <TR>
+                          <TD height=25><% =lang("webport") %></TD>
+                          <TD><INPUT class=text id=port maxLength=5 size=6 value=<% =$bbr->rmanage.wan_port %> 
+                  name=port></TD>
+                        </TR>
+                        <TR>
+                          <TD width=136 height=25><% =lang("webip") %></TD>
+                          <TD width=264><INPUT class=text id=ip maxLength=15 size=16 
+                  value="<% =bbr->rmanage.remote_manage_host %>" name=ip></TD>
+                        </TR>
+                      </TBODY>
+                    </TABLE></TD>
+                  <TD class=vline rowSpan=15><BR></TD>
+                </TR>
+                <TR>
+                  <TD class=hline><IMG height=1 src="/rom/empty.gif" 
+            width=1></TD>
+                </TR>
+                <TR>
+                  <TD class=tail height=30>&nbsp;
+                    <INPUT class=button id=Submit type=submit value="<% =lang("save") %>" name=Save>
+&nbsp; </TD>
+                </TR>
+                <TR>
+                  <TD class=hline><IMG height=1 src="/rom/empty.gif" 
+            width=1></TD>
+                </TR>
+              </TBODY>
+            </TABLE></TD>
+        </TR>
+      </TBODY>
+    </TABLE>
+  </FORM>
+</CENTER>
+<META http-equiv=pragma content=no-cache>
+</BODY>
+</HTML>

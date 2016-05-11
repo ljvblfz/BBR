@@ -1,0 +1,189 @@
+<% @b 
+	@include <webhandle.h>
+	USE_LANG_SET(dhcp);
+	BROADBAND_ROUTER 	bbr[1];
+	char				errmsg[256] = "";
+	
+	/* load first */
+	load_bbr(bbr, errmsg);
+	
+	/* save user submit */
+	if (!isblankstr(G("Save"))) {
+		bbr->dhcps.enable = atoi(G("dhcpserver"));
+		BUFCPY(bbr->dhcps.pool_start, G("ip1"));
+		BUFCPY(bbr->dhcps.pool_end, G("ip2"));
+		bbr->dhcps.lease = atoi(G("lease"));
+		BUFCPY(bbr->dhcps.default_gateway, G("gateway"));
+		BUFCPY(bbr->dhcps.default_dsn, G("domain"));
+		BUFCPY(bbr->dhcps.main_dsn_server, G("dnsserver"));
+		BUFCPY(bbr->dhcps.backup_dsn_server, G("dnsserver2"));
+		
+		save_bbr(bbr, errmsg);
+	}
+	
+%>
+
+<HTML>
+<HEAD>
+<TITLE>dhcpserver</TITLE>
+<META content="text/html; charset=gb2312" http-equiv=Content-Type>
+<META content=no-cache http-equiv=pragma>
+<META content="wed, 26 Feb 1997 08:21:57 GMT" http-equiv=expires>
+<LINK 
+href="/rom/bbr.css" rel=stylesheet type=text/css>
+<SCRIPT language=JavaScript src='/js/common.js' 
+type=text/JavaScript><!--
+//--></SCRIPT>
+<SCRIPT language=JavaScript><!-- 
+if(window.parent == window){window.location.href="<% =getScriptName() %>";}
+function Click(){ window.event.returnValue=false;}
+document.oncontextmenu=Click;
+
+function is_domain(domain_string){
+var c;
+var ch = "-.ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+for (var i = 0; i < domain_string.length; i++){
+c = domain_string.charAt(i);
+if (ch.indexOf(c) == -1){
+alert("<% =lang("err_input") %>！");
+return false;}}return true;}
+
+function doSubmit(){
+var MINIP = 1;
+var MAXIP = 254;
+if(document.forms[0].ip1.value!=""){
+if(!is_ipaddr(document.forms[0].ip1.value)){
+var element = document.forms[0].ip1;
+if(element){
+element.focus();
+element.select();}
+return false;}}
+if(document.forms[0].ip2.value!=""){
+if(!is_ipaddr(document.forms[0].ip2.value)){
+var element = document.forms[0].ip2;
+if(element){
+element.focus();
+element.select();}
+return false;}}
+if(document.forms[0].gateway.value!=""){
+if(!is_gatewayaddr(document.forms[0].gateway.value)){
+var element = document.forms[0].gateway;
+if(element){
+element.focus();element.select();}return false;}}
+if(!is_domain(document.forms[0].domain.value)){
+var element = document.forms[0].domain;
+if(element){element.focus();element.select();}return false;}
+if(document.forms[0].dnsserver.value != ""){
+if(!is_dnsaddr(document.forms[0].dnsserver.value)){
+var element = document.forms[0].dnsserver;
+if(element){element.focus();element.select();}return false;}}
+if(document.forms[0].dnsserver2.value != ""){
+if(!is_dnsaddr(document.forms[0].dnsserver2.value)){	
+var element = document.forms[0].dnsserver2;
+if(element){
+element.focus();
+element.select();}
+return false;}}
+alert("<% =lang("restart_router") %>");
+return true;}
+//--></SCRIPT>
+</HEAD>
+<BODY>
+<CENTER>
+  <FORM action="" method=post>
+    <TABLE border=0 cellPadding=0 cellSpacing=0 width=502>
+      <TBODY>
+        <TR>
+          <TD class=title width=7><IMG height=24 
+		  src="/rom/arc.gif" width=7></TD>
+          <TD align=left class=title vAlign=center width=495><% =lang("dhcp") %></TD>
+        </TR>
+        <TR>
+          <TD colSpan=2><TABLE border=0 cellPadding=0 cellSpacing=0 width=502>
+              <TBODY>
+                <TR>
+                  <TD class=vline rowSpan=15><BR></TD>
+                  <TD width=500><TABLE align=center border=0 cellPadding=0 cellSpacing=0 class=space 
+            width=400>
+                      <TBODY>
+                        <TR>
+                          <TD><% =lang("service_note") %></TD>
+                        </TR>
+                      </TBODY>
+                    </TABLE>
+                    <TABLE align=center border=0 class=space width=400>
+                      <TBODY>
+                        <TR>
+                          <TD width=107><% =lang("dhcp_serv") %>：</TD>
+                          <TD width=283><% RADIO_BOX2("dhcpserver", "0", bbr->dhcps.enable, ""); %>
+                            <% =lang("not_use") %>
+                            <% RADIO_BOX2("dhcpserver", "1", bbr->dhcps.enable, ""); %>
+                            <% =lang("use") %> </TD>
+                        </TR>
+                        <TR>
+                          <TD><% =lang("start_ip") %>：</TD>
+                          <TD><INPUT class=text maxLength=15 name=ip1 size=15 
+                  value="<% =bbr->dhcps.pool_start %>"></TD>
+                        </TR>
+                        <TR>
+                          <TD><% =lang("end_ip") %>：</TD>
+                          <TD><INPUT class=text maxLength=15 name=ip2 size=15 
+                  value="<% =bbr->dhcps.pool_end %>"></TD>
+                        </TR>
+                        <TR>
+                          <TD><% =lang("lease") %>：</TD>
+                          <TD><INPUT class=text maxLength=4 name=lease size=4 
+                  value="<% =$bbr->dhcps.lease %>">
+&nbsp;<% =lang("lease_note") %></TD>
+                        </TR>
+                        <TR>
+                          <TD><% =lang("gateway") %>：</TD>
+                          <TD><INPUT class=text maxLength=15 name=gateway size=15
+                  value="<% =bbr->dhcps.default_gateway %>">
+                            （<% =lang("option") %>）</TD>
+                        </TR>
+                        <TR>
+                          <TD><% =lang("dns") %>：</TD>
+                          <TD><INPUT class=text id=domain maxLength=30 name=domain size=15
+                  value="<% =bbr->dhcps.default_dsn %>">
+                            （<% =lang("option") %>）</TD>
+                        </TR>
+                        <TR>
+                          <TD><% =lang("main_dns") %>：</TD>
+                          <TD><INPUT class=text maxLength=15 name=dnsserver size=15
+                  value="<% =bbr->dhcps.main_dsn_server %>">
+                            （<% =lang("option") %>）</TD>
+                        </TR>
+                        <TR>
+                          <TD><% =lang("backup_dns") %>：</TD>
+                          <TD><INPUT class=text maxLength=15 name=dnsserver2 size=15
+                  value="<% =bbr->dhcps.backup_dsn_server %>">
+                            （<% =lang("option") %>）</TD>
+                        </TR>
+                      </TBODY>
+                    </TABLE></TD>
+                  <TD class=vline rowSpan=15><BR></TD>
+                </TR>
+                <TR>
+                  <TD class=hline><IMG height=1 src="/rom/empty.gif" 
+            width=1></TD>
+                </TR>
+                <TR>
+                  <TD class=tail height=30>&nbsp;
+                    <INPUT class=button id=Submit name=Save onclick="return doSubmit();" type=submit value="<% =lang("save") %>">
+&nbsp; </TD>
+                </TR>
+                <TR>
+                  <TD class=hline><IMG height=1 src="/rom/empty.gif" 
+            width=1></TD>
+                </TR>
+              </TBODY>
+            </TABLE></TD>
+        </TR>
+      </TBODY>
+    </TABLE>
+  </FORM>
+</CENTER>
+<META content=no-cache http-equiv=pragma>
+</BODY>
+</HTML>

@@ -1,0 +1,132 @@
+<% @b
+	@include <webhandle.h>
+	USE_LANG_SET(login);
+	BROADBAND_ROUTER 	bbr[1];
+	char				errmsg[256] = "Please login";
+	char *				puser = getCookie("username");
+	char *				pid   = getCookie("session_id");
+	char *				pname = G("usrname");
+	char *				ppswd = G("passwd");
+	char *				language = G("lang");
+	
+	/* load first */
+	load_bbr(bbr, errmsg);
+	
+	/* set default language */
+	if (!strcmp("ch", language))
+	{
+		setcookie("lang", "ch", NULL);
+		defLangSet(LANG_CH);
+	}
+	else if (!strcmp("en", language))
+	{
+		setcookie("lang", "en", NULL);
+		defLangSet(LANG_EN);
+	}
+	else if (!strcmp("jp", language))
+	{
+		setcookie("lang", "jp", NULL);
+		defLangSet(LANG_JP);
+	}
+	
+	/* have been login */
+	if (	!isblankstr(puser) && !isblankstr(pid) &&
+			!strcmp(puser, bbr->account.user) && 
+			!strcmp(pid, bbr->account.session_id))			
+	{
+		redirect("%s", get_filename(getScriptName())); 	/* redirect to this page */
+		page_exit(OK);
+	}
+	
+	/* save user submit */
+	if (!isblankstr(G("login"))) 
+	{
+		if (!strcmp(pname, bbr->account.user) && 
+			!strcmp(ppswd, bbr->account.passwd))
+		{
+#if 1
+			/* don't set expire */
+			setcookie("username", pname, NULL);
+			setcookie("session_id", bbr->account.session_id, NULL);
+#else
+			/* set expire time 1 day */
+			setcookie("username", pname, time(NULL)+3600*24, NULL);
+			setcookie("session_id", bbr->account.session_id, time(NULL)+3600*24, NULL);
+#endif
+
+			redirect("%s", get_filename(getScriptName())); 	/* redirect to this page */
+			page_exit(OK);
+		}
+		
+		if (isblankstr(ppswd))
+			sprintf(errmsg, lang("prompt_input"));
+		else
+			sprintf(errmsg, lang("errmsg"));
+	}
+	
+	/* default user account: user:user, auto filled into
+	 * for release version please remove this part
+	 */
+	if (!strcmp("user", bbr->account.user) && 
+		!strcmp("user", bbr->account.passwd))
+	{
+		ppswd = "user";
+	}
+%>
+<html>
+<head>
+<META content=no-cache http-equiv=pragma>
+<META content="text/html; charset=gb2312" http-equiv=Content-Type>
+<META content="wed, 26 Feb 1997 08:21:57 GMT" http-equiv=expires>
+<title>BBR <% =lang("login") %>(<% =BBR_VERSION %>)</title>
+<style>
+<!-- 
+p, td, div, b {	font-size: 11pt; }
+td {height: 35px;}
+div { color: red }
+#title {font-size: <% =$LANG_JP==defLangGet() ? 15: 16%>px; color: #663300; width: 90px; }
+#text { width: 150px; }
+a:link {color: #000066; text-decoration: none} 
+a:visited {color: #000066; text-decoration: none}
+a:hover {color: #FF0000; text-decoration: underline} 
+a:active {color: #000066; text-decoration: underline}
+-->
+</style>
+<script language=JavaScript><!-- 
+if (top.location !== self.location){top.location.href=self.location;}
+function set_focus() {
+	document.forms[0].elements[1].focus();
+}
+-->
+</script>
+</head>
+<body onload="set_focus();">
+<p style="margin-top: 80px">
+<center>
+<form action="" method=post>
+  <table width=300 border=1 cellpadding="2" cellspacing="0" bordercolor="#EA8A1C">
+    <tr>
+      <td height=40 colspan=2 bgcolor="#FFDA00"><strong><% =lang("login_to") %> Broadband Router:</strong></td>
+    <tr>
+      <td id="title"><% =lang("username") %>：</td>
+      <td height=30><input id="text" type=text name=usrname size=12 value="<% =bbr->account.user %>"></td>
+    <tr>
+      <td id="title"><% =lang("password") %>：</td>
+      <td height=30><input id="text" type=password name=passwd size=12 value="<% =ppswd %>"></td>
+    <tr>
+      <td colspan=2 align=center><input type=submit name=login value="<% =lang("submit") %>"></td>
+  </table>
+ </FORM>
+<% if ('\0' != errmsg[0]) { %>
+<div><% =errmsg %></div><p>
+<% } %>
+<div>
+[ <A href="/login.csp&lang=ch" target=_top>中文</A> |
+  <A href="/login.csp&lang=en" target=_top>English</A> |
+  <A href="/login.csp&lang=jp" target=_top>日本語</A> ]
+</div>
+<p style="margin-top: 30px">(<% =lang("comefrom") %> http://www.eybuild.com)</p>
+</center>
+</body>
+</html>
+

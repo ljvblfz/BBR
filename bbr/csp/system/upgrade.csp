@@ -1,0 +1,120 @@
+<% @b
+	@include <webhandle.h> 
+	USE_LANG_SET(system);
+	%>
+<HTML>
+<HEAD>
+<TITLE>update</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=gb2312">
+<META http-equiv=pragma content=no-cache>
+<META http-equiv=expires content="wed, 26 Feb 1997 08:21:57 GMT">
+<LINK 
+href="/rom/bbr.css" type=text/css rel=stylesheet>
+<SCRIPT language=JavaScript src='/js/common.js' 
+type=text/JavaScript><!--
+//--></SCRIPT>
+<SCRIPT language=JavaScript><!-- 
+if(window.parent == window){window.location.href="<% =getScriptName() %>";}
+function Click(){ window.event.returnValue=false;}
+document.oncontextmenu=Click;
+var bClick=false;
+function doSubmit(){
+if(bClick==true)
+return false;
+if(document.forms[0].filename.value != ""){
+if(!charCompare(document.forms[0].filename.value,20,0)){	
+alert("文件名中含有非法字符，请重新输入！");
+var element =document.forms[0].filename;
+if(element){
+element.focus();element.select();}return false;}}
+else{alert("请输入文件名！");
+var element =document.forms[0].filename;
+if(element){
+element.focus();
+element.select();}
+return false;}
+if(!is_ipaddr(document.forms[0].ip.value)){ 
+var element =document.forms[0].ip;
+if(element){
+element.focus();
+element.select();}
+return false;}
+if(confirm("确认要进行软件升级吗?")){
+bClick=true;return true;}else{return false;}}
+//--></SCRIPT>
+</HEAD>
+<BODY>
+<CENTER>
+  <FORM action="" method=post onsubmit="return doSubmit();">
+    <TABLE cellSpacing=0 cellPadding=0 width=502 border=0>
+      <TBODY>
+        <TR>
+          <TD class=title width=7><IMG height=24 
+      src="/rom/arc.gif" width=7></TD>
+          <TD class=title vAlign=center align=left width=495><% =lang("softupgrade") %></TD>
+        </TR>
+        <TR>
+          <TD colSpan=2><TABLE cellSpacing=0 cellPadding=0 width=502 border=0>
+              <TBODY>
+                <TR>
+                  <TD class=vline rowSpan=15><BR></TD>
+                  <TD width=500><TABLE class=space cellSpacing=0 cellPadding=0 width=400 
+            align=center border=0>
+                      <TBODY>
+                        <TR>
+                          <TD><% =lang("upgradedesc") %></TD>
+                        </TR>
+                      </TBODY>
+                    </TABLE>
+                    <TABLE class=space cellSpacing=0 cellPadding=0 width=400 
+            align=center border=0>
+                      <TBODY>
+                        <TR>
+                          <TD width=105><% =lang("filename") %></TD>
+                          <TD width=295><INPUT class=text id=filename maxLength=20 disabled
+                  value=bbr-v1.02.bin name=filename></TD>
+                        </TR>
+                        <TR>
+                          <TD>TFTP <% =lang("serverip") %></TD>
+                          <TD><INPUT class=text id=ip maxLength=15 disabled value="" name=ip></TD>
+                        </TR>
+                      </TBODY>
+                    </TABLE>
+                    <TABLE class=space cellSpacing=0 cellPadding=0 width=400 
+            align=center border=0>
+                      <TBODY>
+                        <TR>
+                          <TD height=50><% =lang("cursoftversion") %><% =BBR_VERSION %><BR>
+                            <% =lang("curhardversion") %>V0.1.0</TD>
+                        </TR>
+                        <TR>
+                          <TD><% =lang("notice") %><FONT 
+                  color=red><% =lang("noticedesc") %></TD>
+                        </TR>
+                      </TBODY>
+                    </TABLE></TD>
+                  <TD class=vline rowSpan=15><BR></TD>
+                </TR>
+                <TR>
+                  <TD class=hline><IMG height=1 
+            src="/rom/empty.gif" width=1></TD>
+                </TR>
+                <TR>
+                  <TD class=tail height=30>&nbsp;
+                    <INPUT class=button id=Submit type=submit disabled value="<% =lang("upgrade") %>" name=Submit></TD>
+                </TR>
+                <TR>
+                  <TD class=hline><IMG height=1 
+            src="/rom/empty.gif" 
+    width=1></TD>
+                </TR>
+              </TBODY>
+            </TABLE></TD>
+        </TR>
+      </TBODY>
+    </TABLE>
+  </FORM>
+</CENTER>
+<META http-equiv=pragma content=no-cache>
+</BODY>
+</HTML>

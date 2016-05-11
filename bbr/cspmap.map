@@ -1,0 +1,16 @@
+# this file list how to map files to virtual directory
+#
+
+# source directory          virtual directory
+# ------------------        ------------------
+
+csp/*.csp          -z   ==>     /
+csp/basic/*.csp    -z   ==>     /basic/
+csp/security/*.csp -z   ==>     /security/
+csp/network/*.csp  -z   ==>     /network/
+csp/route/*.csp    -z   ==>     /route/
+csp/system/*.csp   -z   ==>     /system/
+csp/nat/*.csp      -z   ==>     /nat/
+csp/dhcp/*.csp     -z   ==>     /dhcp/
+csp/rom/	       -z   ==>     /js/
+common.js

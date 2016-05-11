@@ -1,0 +1,36 @@
+
+/* menu */
+	EB_MULTI_LANG_BEGIN(menu, NULL) {
+		EB_LANG_ADD("lansetting", 			"Lan口设置", 	"Lan Setting", "Lan口は設ける"),
+		EB_LANG_ADD("wansetting", 			"WAN口设置", 	"Wan Setting", "Wan口は設ける"),
+		EB_LANG_ADD("macclone", 			"MAC地址克隆", 	"Mac Clone", "MAC住所はクローンする"),
+    	EB_LANG_ADD("dhcpserver", 			"DHCP服务",		"Dhcp Server", "DHCPサービス"), 
+    	EB_LANG_ADD("dhcpclients", 			"客户端列表", 	"Dhcp Clients", "クライアントのリスト"), 
+		EB_LANG_ADD("dhcpfixmap", 			"静态地址分配", "Dhcp Fix Map", "静態の住所は割り当てる"), 
+    	EB_LANG_ADD("natvirtualserver", 	"虚拟服务器", 	"Virtual Server", "サーバーを仮想する"), 
+    	EB_LANG_ADD("natspecial_app", 		"特殊应用程序", "Special App", "特殊なアプリケーション"), 
+		EB_LANG_ADD("natdmz", 				"DMZ主机", 		"DMZ Setting", "DMZホストコンピュータ"), 
+		EB_LANG_ADD("natupnp", 				"UPnP设置", 	"Upnp Setting", "UPnP設置"), 
+    	EB_LANG_ADD("securityfirewall", 	"防火墙设置", 	"Firewall", "ファイアウォールの設置"), 
+    	EB_LANG_ADD("securityipfilter", 	"IP地址过滤", 	"Ipfilter", "IPアドレスの濾過"), 
+		EB_LANG_ADD("securitydomainfilter", "域名过滤", 	"Domain Filter", "ドメイン名の濾過"), 
+		EB_LANG_ADD("securitymacfilter", 	"MAC地址过滤", 	"Mac Filter", "MAC住所は濾過する"), 
+		EB_LANG_ADD("securityremoteweb", 	"远端WEB管理", 	"Remote Web", "遠端WEB管理"), 
+		EB_LANG_ADD("securityping", 		"WAN口Ping", 	"Ping", "WAN口Ping"), 
+    	EB_LANG_ADD("routestatic", 			"静态路由表", 	"Static Route", "静態のルートは表す"),
+    	EB_LANG_ADD("systemupgrade", 		"软件升级", 	"Upgrade", "ソフトウェアは進級する"), 
+    	EB_LANG_ADD("systemrestore", 		"恢复出厂设置", "Restore", "工場出荷を回復して設ける"), 
+		EB_LANG_ADD("systemreboot", 		"重启路由器", 	"Reboot", "ルータを再起動する"), 
+		EB_LANG_ADD("systemaccount", 		"修改登录口令", "Account", "改正してパスワードを登録する"), 
+		EB_LANG_ADD("systemlog", 			"系统日志",  	"System Log", "系統的な日誌"),
+    	EB_LANG_ADD("basicstatus", 			"运行状态", 	"Status", "走行状態"),
+    	EB_LANG_ADD("basicguide", 			"设置向导", 	"Guide", "案内人を設ける"),   
+    	EB_LANG_ADD("network", 				"网络参数", 	"Network", "ネットワークのパラメーター"),   
+    	EB_LANG_ADD("dhcpserver", 			"DHCP服务器", 	"Dhcp Server", "DHCPサーバー"), 
+    	EB_LANG_ADD("nat", 					"转发规则", 	"Nat Rule", "規則を配布する"),   
+    	EB_LANG_ADD("security", 			"安全设置", 	"Security", "安全の設置"),   
+    	EB_LANG_ADD("route", 				"路由功能", 	"Route", "ルートの機能"),   
+    	EB_LANG_ADD("systetool", 			"系统工具", 	"System", "系統的なツール"),   
+	
+		EB_LANG_ADD(NULL, NULL, NULL, NULL)
+	};

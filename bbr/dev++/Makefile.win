@@ -1,0 +1,45 @@
+# Project: bbr++
+# Makefile created by Dev-C++ 4.9.9.2
+
+CPP  = g++.exe -D__DEBUG__
+CC   = gcc.exe -D__DEBUG__
+WINDRES = windres.exe
+RES  = 
+OBJ  = ../cgimain.o ../lang/lang_global.o ../cspsrc/usr/menu.o ../cspsrc/usr/webhandle.o ../cspsrc/csp_maplist.o ../cspsrc/rom_maplist.o $(RES)
+LINKOBJ  = ../cgimain.o ../lang/lang_global.o ../cspsrc/usr/menu.o ../cspsrc/usr/webhandle.o ../cspsrc/csp_maplist.o ../cspsrc/rom_maplist.o $(RES)
+LIBS =  -L"C:/Dev-Cpp/lib" ../../../lib/dev/libeybuild.a  -g3 
+INCS =  -I"C:/Dev-Cpp/include"  -I"E:/eybuild/include"  -I"E:/eybuild/project/bbr/cspsrc"  -I"E:/eybuild/project/bbr/cspsrc/usr"  -I"E:/eybuild/project/bbr/lang" 
+CXXINCS =  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Dev-Cpp/include/c++/3.4.2/backward"  -I"C:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"C:/Dev-Cpp/include/c++/3.4.2"  -I"C:/Dev-Cpp/include"  -I"E:/eybuild/include"  -I"E:/eybuild/project/bbr/cspsrc"  -I"E:/eybuild/project/bbr/cspsrc/usr"  -I"E:/eybuild/project/bbr/lang" 
+BIN  = F:/website/cgi-bin/bbr.cgi
+CXXFLAGS = $(CXXINCS) -DEB_LANG_NUM=3   -g3
+CFLAGS = $(INCS)   -g3
+RM = rm -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before F:/website/cgi-bin/bbr.cgi all-after
+
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o "F:\website\cgi-bin\bbr.cgi" $(LIBS)
+
+../cgimain.o: ../cgimain.c
+	$(CPP) -c ../cgimain.c -o ../cgimain.o $(CXXFLAGS)
+
+../lang/lang_global.o: ../lang/lang_global.c
+	$(CPP) -c ../lang/lang_global.c -o ../lang/lang_global.o $(CXXFLAGS)
+
+../cspsrc/usr/menu.o: ../cspsrc/usr/menu.c
+	$(CPP) -c ../cspsrc/usr/menu.c -o ../cspsrc/usr/menu.o $(CXXFLAGS)
+
+../cspsrc/usr/webhandle.o: ../cspsrc/usr/webhandle.c
+	$(CPP) -c ../cspsrc/usr/webhandle.c -o ../cspsrc/usr/webhandle.o $(CXXFLAGS)
+
+../cspsrc/csp_maplist.o: ../cspsrc/csp_maplist.cpp
+	$(CPP) -c ../cspsrc/csp_maplist.cpp -o ../cspsrc/csp_maplist.o $(CXXFLAGS)
+
+../cspsrc/rom_maplist.o: ../cspsrc/rom_maplist.c
+	$(CPP) -c ../cspsrc/rom_maplist.c -o ../cspsrc/rom_maplist.o $(CXXFLAGS)
